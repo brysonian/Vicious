@@ -13,6 +13,10 @@ Vicious attempts to implement most of the Sinatra DSL for quickly creating web a
 
 To install, download the library and put it in your include path (or just in your web folder).
 
+## Requirements
+Vicious takes advantage of a number of PHP 5.3 specific features like namespaces and late static bindings. We're looking into ways to generate a downgraded version for older versions of PHP.
+
+
 ## Htaccess
 Vicious, like sinatra, is built around "pretty urls," but to enable these on Apache requires some mod_rewrite voodoo. Vicious comes with a very basic generator that allows you to create an htaccess file ready to use in your app. 
 
