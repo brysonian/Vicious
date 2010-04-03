@@ -1,7 +1,8 @@
 <?php
 declare(encoding='UTF-8');
 
-namespace vicious {
+namespace vicious
+{
 
 
 class ViciousException extends \Exception {
@@ -11,6 +12,18 @@ class ViciousException extends \Exception {
 // ===========================================================
 	function __construct($message='', $code=0) {
 		parent::__construct($message, $code);
+	}
+	
+	/**
+	 * Create a ViciousException from another exception.
+	 * Mostly used to convert exceptions thrown from other frameworks, etc.
+	 */
+	public static function fromException($e) {
+		$v = new ViciousException($e->getMessage(), intval($e->getCode()));
+		$v->file = $e->getFile();
+		$v->line = $e->getLine();
+		$v->trace = $e->getTrace();
+		return $v;
 	}
 
 // ===========================================================

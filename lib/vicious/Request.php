@@ -1,7 +1,8 @@
 <?php
 declare(encoding='UTF-8');
 
-namespace vicious {
+namespace vicious
+{
 
 require_once(__DIR__.'/ViciousException.php');
 require_once(__DIR__.'/Config.php');
@@ -20,7 +21,7 @@ class Request {
 			$this->uri = $uri;
 		}
 		if ($method !== false) $this->method = $method;
-		if (\options('methodoverride')) $this->method_override();
+		if (options('methodoverride')) $this->method_override();
 	}
 
 	
@@ -80,7 +81,8 @@ class UnknownProperty extends ViciousException {}
 
 }
 
-namespace {
+namespace 
+{
 	function request($k=false) {
 		static $instance;
 		if (!$instance) $instance = new vicious\Request();

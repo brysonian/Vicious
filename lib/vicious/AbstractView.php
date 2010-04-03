@@ -1,7 +1,8 @@
 <?php
 declare(encoding='UTF-8');
 
-namespace vicious {
+namespace vicious
+{
 
 require_once(__DIR__.'/ViciousException.php');
 require_once(__DIR__.'/Renderable.php');
@@ -21,7 +22,7 @@ class AbstractView implements Renderable
 
 	public function send_content_type_header() {
 		# set the content_type_header if there is one
-		if ($this->content_type_header !== false && !\options('cli')) header($this->content_type_header);
+		if ($this->content_type_header !== false && !options('cli')) header($this->content_type_header);
 	}
 	
 	/**
@@ -30,7 +31,7 @@ class AbstractView implements Renderable
 	 */
 	protected function autofind_layout() {
 		if ($this->extension != false) {
-			$l = \options('views').'/layout.'.$this->extension;
+			$l = options('views').'/layout.'.$this->extension;
 			if (file_exists($l)) {
 				$this->set_layout('layout');
 				return 'layout';

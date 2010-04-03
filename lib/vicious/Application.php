@@ -1,7 +1,8 @@
 <?php
 declare(encoding='UTF-8');
 
-namespace vicious {
+namespace vicious
+{
 
 
 	require_once(__DIR__.'/Helpers.php');
@@ -66,8 +67,7 @@ namespace vicious {
 		public static function instance() {
 			static $instance;
 			if (!$instance) {
-				$c = get_called_class();
-				$instance = new $c();
+				$instance = new Application;
 			}
 			return $instance;
 		}
@@ -154,6 +154,7 @@ namespace vicious {
 
 		public function handle_error($e) {
 			$logo = 'data:image/png;base64,' . base64_encode(file_get_contents(__DIR__.'/images/vicious.png'));
+			if (!($e instanceof ViciousException)) $e = ViciousException::fromException($e);
 
 			if ($e instanceof NotFound) {				
 				$this->status(404);
@@ -279,6 +280,10 @@ namespace vicious {
 			}
 		}
 
+		public function route() {
+			return $this->route;
+		}
+
 		// ===========================================================
 		// - RESPONSE HELPERS
 		// ===========================================================
@@ -304,6 +309,7 @@ namespace vicious {
 
 		public function redirect($loc=false, $code=false) {
 			if ($code !== false) status($code);
+			$loc = $loc ? $loc : '/';
 			header("Location: $loc");	
 			exit();
 		}
@@ -311,7 +317,8 @@ namespace vicious {
 	}
 }
 
-namespace {
+namespace 
+{
 	# get single static instance of a Application
 	function app() { return vicious\Application::instance(); }
 	function application() { return vicious\Application::instance(); }

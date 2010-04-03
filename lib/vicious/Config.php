@@ -1,7 +1,8 @@
 <?php
 declare(encoding='UTF-8');
 
-namespace vicious {
+namespace vicious
+{
 
 require_once(__DIR__.'/ViciousException.php');
 
@@ -28,8 +29,7 @@ class Config
 	public static function instance() {
 		static $instance;
 		if (!$instance) {
-			$c = get_called_class();
-			$instance = new $c();
+			$instance = new Config();
 		}
 		return $instance;
 	}
@@ -64,7 +64,8 @@ class AppFileUndefined extends ViciousException {}
 // ===========================================================
 // - TOSS FUNCS IN THE GLOBAL NAMESPACE FOR CONVENIENCE
 // ===========================================================
-namespace {
+namespace 
+{
 	function set($key, $value=false) {
 		$i = vicious\Config::instance();
 		if (is_array($key)) {

@@ -9,7 +9,8 @@ declare(encoding='UTF-8');
  *	define('OMIT_GLOBAL_HELPERS', true);
  * Before including the Application class.
  */
-namespace {
+namespace 
+{
 	if (!defined('OMIT_GLOBAL_HELPERS')) {
 		function get($pattern, $handler)		{ application()->get($pattern, $handler); }
 		function put($pattern, $handler)		{ application()->put($pattern, $handler); }

@@ -1,7 +1,8 @@
 <?php
 declare(encoding='UTF-8');
 
-namespace vicious {
+namespace vicious
+{
 
 require_once(__DIR__.'/AbstractView.php');
 require_once(__DIR__.'/Config.php');
@@ -24,7 +25,7 @@ class PHTML extends AbstractView
 		ob_start();
 		
 		# include the template
-		require \options('views').'/'.$this->template.'.'.$this->extension;
+		require options('views').'/'.$this->template.'.'.$this->extension;
 		
 		# get the buffer contents
 		$parsed = ob_get_contents();
@@ -38,7 +39,7 @@ class PHTML extends AbstractView
 			$content_for_layout = $parsed;
 		
 			# include the template
-			include \options('views').'/'.$this->layout.".".$this->extension;
+			include options('views').'/'.$this->layout.".".$this->extension;
 	
 			# get the buffer contents
 			$parsed = ob_get_contents();
@@ -58,7 +59,8 @@ class PHTML extends AbstractView
 // ===========================================================
 // - TOSS FUNCS IN THE GLOBAL NAMESPACE FOR CONVENIENCE
 // ===========================================================
-namespace {
+namespace 
+{
 
 /**
  * Return a static instance of PHTML. This works as a singleton and provides easy access to the output object

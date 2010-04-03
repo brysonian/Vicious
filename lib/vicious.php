@@ -4,7 +4,30 @@ declare(encoding='UTF-8');
 
 # generator
 if (php_sapi_name() == 'cli') {
-	require_once(__DIR__.'/vicious/generator.php');
+	if (!array_key_exists(1, $_SERVER['argv'])) {
+		$err = "\nVicious generator. \n==================\n";
+		$err .= "ERROR: You must specify an action.\n";		
+		$err .= "\n\nExample Usage:\n    php vicious.php htaccess routes.php\n";
+		$err .= "\n\nExample Usage:\n    php vicious.php downgrade.php\n\n";
+		die($err);
+	}
+	
+	switch ($_SERVER['argv'][1]) {
+		case 'downgrade':
+			require_once(dirname(__FILE__).'/vicious/generators/downgrade.php');
+			break;
+		
+		case 'htaccess':
+			require_once(dirname(__FILE__).'/vicious/generators/htaccess.php');
+			break;
+		
+		default:
+			$err = "\nVicious generator. \n==================\n";
+			$err .= "ERROR: You must specify an action.\n";		
+			$err .= "\n\nExample Usage:\n    php vicious.php htaccess routes.php\n";
+			$err .= "\n\nExample Usage:\n    php vicious.php downgrade\n\n";
+			die($err);
+	}
 	exit();
 }
 

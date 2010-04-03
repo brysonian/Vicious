@@ -1,7 +1,8 @@
 <?php
 declare(encoding='UTF-8');
 
-namespace vicious {
+namespace vicious
+{
 
 require_once(__DIR__.'/ViciousException.php');
 require_once(__DIR__.'/Route.php');
@@ -214,7 +215,8 @@ class UnknownController extends ViciousException {}
 
 }
 
-namespace {
+namespace 
+{
 	
 	function r($pattern) {
 		return array('regex' => $pattern);
