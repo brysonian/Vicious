@@ -196,6 +196,11 @@ namespace vicious
 						} else {
 							$html .= "<tr><th class='type'>$type</th><th>Variable</th><th>Value</th></tr>";
 							foreach($sg as $k => $v) {
+								if (is_array($v)) {
+									ob_start();
+									var_export($v);
+									$v = nl2br(ob_get_clean());
+								}
 								$html .= "<tr><td class='blank'></td><td class='key'>$k</td><td>".wordwrap($v, 150, "<br />\n", true)."</td></tr>";
 							}
 						}
