@@ -2,9 +2,15 @@
 
 require_once 'PHPUnit/Framework.php';
 require_once '../lib/vicious/Router.php';
+require_once '../lib/vicious/Config.php';
 
 class RouterTest extends PHPUnit_Framework_TestCase
 {
+	
+	public function setUp() {
+		set('base', false);
+		
+	}
 
 	public function testGet() {
 		$r = new RouterTestWrapper();
@@ -62,6 +68,14 @@ class RouterTest extends PHPUnit_Framework_TestCase
 		$r = new RouterTestWrapper();
 		$r->get('/', function() {});
 		$this->assertTrue($r->url_matches_route('/', $r->routes['GET'][0]));
+	}
+
+	public function testUrlMatchesRouteUsingBase() {
+		$r = new RouterTestWrapper();
+		$url = '/hello/world';
+		set('base', $url);
+		$r->get('/', function() {});
+		$this->assertTrue($r->url_matches_route($url, $r->routes['GET'][0]));
 	}
 
 	public function testParamsForUrlWithRoute() {
