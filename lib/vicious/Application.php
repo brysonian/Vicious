@@ -21,6 +21,7 @@ namespace vicious
 	
 		protected $error_handler = false;
 		protected $not_found_handler = false;
+		protected $error_shown = false;
 
 		protected $config_handlers = array();
 	
@@ -153,10 +154,12 @@ namespace vicious
 		public function not_found($h) { $this->not_found_handler = $h;	}
 
 		public function handle_error($e) {
+			if ($this->error_shown) return;
+			$this->error_shown = true;
 			$logo = 'data:image/png;base64,' . base64_encode(file_get_contents(__DIR__.'/images/vicious.png'));
 			if (!($e instanceof ViciousException)) $e = ViciousException::fromException($e);
 
-			if ($e instanceof NotFound) {				
+			if ($e instanceof NotFound) {	
 				$this->status(404);
 				if (options('environment') == DEVELOPMENT) {
 					$out = "<!DOCTYPE html>
@@ -254,7 +257,7 @@ namespace vicious
 
 			if ($out != null) {
 				if (is_string($out)) {
-					echo $out;
+					die($out);
 				} else if ($out instanceof Renderable) {
 					$out->send_content_type_header();
 					$out->render();
