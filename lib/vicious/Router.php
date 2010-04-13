@@ -158,6 +158,18 @@ class Router
 	
 
 	protected function process_request_vars($params) {
+		# throw an exception if the max post size is reached
+		if (array_key_exists('CONTENT_LENGTH', $_SERVER) && !empty($_POST)) {
+			$pms = ini_get('post_max_size');
+			$mul = substr($pms, -1);
+			$mul = ($mul == 'M' ? 1048576 : ($mul == 'K' ? 1024 : ($mul == 'G' ? 1073741824 : 1)));
+			if ($_SERVER['CONTENT_LENGTH'] > $mul*(int)$pms && $pms) {
+				throw new MaxPostSizeExceeded("The posted data was too large. The maximum post size is: $pms.");
+			}
+		}
+
+		
+		
 		# add request to params and make sure magic quotes are dealt with
 		unset($_POST['MAX_FILE_SIZE']);
 		unset($_GET['MAX_FILE_SIZE']);
@@ -212,6 +224,7 @@ class Router
 // ===========================================================
 class NotFound extends ViciousException {}
 class UnknownController extends ViciousException {}
+class MaxPostSizeExceeded extends ViciousException {}
 
 }
 
