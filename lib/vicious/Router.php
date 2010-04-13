@@ -55,11 +55,11 @@ class Router
 	 */
 	protected function pattern_to_regex($matches) {
 		if ($matches[1] == '*') {
-			return '/?(.*)';
+			return options('base').'/?(.*)';
 		} else if ($matches[1] != ':') {
-			return '/?('.$matches[2].')';
+			return options('base').'/?('.$matches[2].')';
 		}
-		return '/([^\/]+)';
+		return options('base').'/([^\/]+)';
 	}
 
 	/**
