@@ -19,7 +19,7 @@ class Config
 		$this->root						= '';
 		$this->app_file				= false;
 		$this->app_root				= false;
-		$this->base						= false;
+		$this->base						= '';
 		$this->views					= false;
 		$this->cli						= (php_sapi_name() == 'cli');		
 	}
@@ -53,10 +53,6 @@ class Config
 			if ($this->props['app_file'] == false) throw new AppFileUndefined();
 			$this->app_root = realpath(dirname($this->props['app_file']).'/..');
 			return $this->props['app_root'];
-
-		} else if ($k == 'base' && $this->props['base'] == false) {
-			$this->base = '';
-			return $this->props['base'];
 		}
 		
 		return isset($this->props[$k]) ? $this->props[$k] : false;
