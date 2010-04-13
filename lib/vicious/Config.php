@@ -19,6 +19,7 @@ class Config
 		$this->root						= '';
 		$this->app_file				= false;
 		$this->app_root				= false;
+		$this->base						= false;
 		$this->views					= false;
 		$this->cli						= (php_sapi_name() == 'cli');		
 	}
