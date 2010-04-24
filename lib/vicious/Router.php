@@ -100,7 +100,7 @@ class Router
 					if (array_key_exists($k, $urlparts) && ($urlparts[$k] != '')) $out[$name] = $urlparts[$k];
 
 					# clear nulls
-					if (is_null($out[$name])) unset($out[$name]);
+					if (array_key_exists($name, $out) && is_null($out[$name])) unset($out[$name]);
 				}
 			}	
 		}
