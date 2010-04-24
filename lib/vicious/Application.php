@@ -189,7 +189,11 @@ namespace vicious
 			} else {
 				$this->status(500);
 				if (options('environment') == DEVELOPMENT) {
-					$backtrace = join('</pre></li><li><pre>', explode("\n", $e->trace_as_string()));
+					$backtrace = explode("\n", $e->trace_as_string());
+					array_shift($backtrace);
+					$backtrace = join('</pre></li><li><pre>', $backtrace);
+
+
 					$vars = array('GET' => $_GET, 'POST' => $_POST, 'SESSION' => isset($_SESSION) ? $_SESSION : array(), 'SERVER' => $_SERVER);
 					
 					foreach($vars as $type => $sg) {
