@@ -97,10 +97,7 @@ class Router
 					$name = ($v{0} == '*') ? 'splat' : substr($v,1);
 
 					# get the value
-					if (array_key_exists($k, $urlparts) && ($urlparts[$k] != '')) $out[$name] = $urlparts[$k];
-
-					# clear nulls
-					if (array_key_exists($name, $out) && is_null($out[$name])) unset($out[$name]);
+					if (array_key_exists($k, $urlparts) && ($urlparts[$k] != '') && (!is_null($urlparts[$k]))) $out[$name] = $urlparts[$k];
 				}
 			}	
 		}
