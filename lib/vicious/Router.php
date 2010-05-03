@@ -11,7 +11,6 @@ require_once(__DIR__.'/Route.php');
 class Router
 {
 	protected $routes = array();
-	protected $base = false;
 
 	protected $params = array();
 
@@ -113,8 +112,8 @@ class Router
 		# watch out for bad verbs
 		if (!array_key_exists($verb, $this->routes)) return false;
 
-		# remove the base
-		$url = substr($url, strlen($this->base()));
+		# remove the leading slash
+		$url = substr($url, 1);
 		if ($url{0} != '/') $url = "/$url";
 		foreach($this->routes[$verb] as $route) {
 			if ($this->url_matches_route($url, $route)) {
@@ -196,22 +195,7 @@ class Router
 			);
 		}
 		return $params;
-	}
-	
-	
-// ===========================================================
-// - ACCESSORS
-// ===========================================================
-	/**
-	* Set the base for urls
-	*/
-	public function set_base($val) {
-		$this->base = $val;
-	}
-	
-	public function base() {
-		return $this->base?$this->base:'/';
-	}
+	}	
 }
 
 
