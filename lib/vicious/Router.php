@@ -41,7 +41,7 @@ class Router
 		
 			$terminate = (strpos($pattern, ':') || strpos($pattern, '*')) ? '' : '$';
 		
-			$regex = $delim.'^'.preg_replace_callback(
+			$regex = $delim.'^'.options('base').preg_replace_callback(
 				'/\/([:|\*])?([a-zA-Z0-9_]*)/',
 				array($this, 'pattern_to_regex'),
 				$pattern
@@ -55,11 +55,11 @@ class Router
 	 */
 	protected function pattern_to_regex($matches) {
 		if ($matches[1] == '*') {
-			return options('base').'/?(.*)';
+			return '/?(.*)';
 		} else if ($matches[1] != ':') {
-			return options('base').'/?('.$matches[2].')';
+			return '/?('.$matches[2].')';
 		}
-		return options('base').'/([^\/]+)';
+		return '/([^\/]+)';
 	}
 
 	/**
@@ -116,7 +116,6 @@ class Router
 		# remove the base
 		$url = substr($url, strlen($this->base()));
 		if ($url{0} != '/') $url = "/$url";
-
 		foreach($this->routes[$verb] as $route) {
 			if ($this->url_matches_route($url, $route)) {
 				return $route;
