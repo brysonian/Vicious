@@ -78,6 +78,15 @@ class RouterTest extends PHPUnit_Framework_TestCase
 		$this->assertTrue($r->url_matches_route($url, $r->routes['GET'][0]));
 	}
 
+	public function testUrlMatchesRouteUsingDeepBase() {
+		$r = new RouterTestWrapper();
+		$base = '/hello/world';
+		$url = $base . '/name/bob';
+		set('base', $base);
+		$r->get('/name/bob', function() {});
+		$this->assertTrue($r->url_matches_route($url, $r->routes['GET'][0]));
+	}
+
 	public function testParamsForUrlWithRoute() {
 		$r = new RouterTestWrapper();
 		$r->get('/person/:name/:id', function() {});
