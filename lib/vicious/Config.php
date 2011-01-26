@@ -13,7 +13,7 @@ class Config
 {
 	private $props = array();
 
-	private function Config() {
+	private function __construct() {
 		$this->environment		= DEVELOPMENT;
 		$this->methodoverride = true;
 		$this->root						= '';
