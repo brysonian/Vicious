@@ -16,7 +16,7 @@ class AbstractView implements Renderable
 	protected $extension						= false;
 	protected $content_type_header	= false;
 	
-	public function AbstractView() {}
+	public function __construct() {}
 	
 	public function render() {}
 
