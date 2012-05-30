@@ -12,6 +12,13 @@ class ViciousException extends \Exception {
 // ===========================================================
 	function __construct($message='', $code=0) {
 		parent::__construct($message, $code);
+		
+		# try to adjust exception info to focus on application errors
+		if (dirname($this->file()) == dirname(__FILE__)) {
+			$t = $this->trace();
+			$this->file = array_key_exists("file", $t[0]) ? $t[0]['file'] : '';
+			$this->line = array_key_exists("line", $t[0]) ? $t[0]['line'] : '';
+		}
 	}
 	
 	/**
