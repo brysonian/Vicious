@@ -6,6 +6,7 @@ namespace vicious
 
 require_once(__DIR__.'/ViciousException.php');
 require_once(__DIR__.'/Route.php');
+require_once(__DIR__.'/UploadedFile.php');
 
 
 class Router
@@ -187,13 +188,18 @@ class Router
 		
 		# add files to params
 		foreach($_FILES as $k => $v) {
-			if (!array_key_exists($k, $params)) $params[$k] = array();
-			$params[$k] = array_merge(
-				$params[$k], 
-				# TODO: easy file uploads
-				$v
-			);
+			if (!array_key_exists($k, $params)) {
+				try {
+					$uploaded_file = UploadedFile::create($v);					
+				} catch (UpoadedFileException $e) {
+					$uploaded_file = false;
+				}
+				$params[$k] = $uploaded_file;
+			}
 		}
+
+		
+		
 		return $params;
 	}	
 }
