@@ -161,7 +161,7 @@ namespace vicious
 
 			if ($e instanceof NotFound) {	
 				$this->status(404);
-				if (options('environment') == DEVELOPMENT) {
+				if (options('environment') != PRODUCTION) {
 					$out = "<!DOCTYPE html>
 					<html><head><title>404 Not Found</title>
 					<style type='text/css'>
@@ -188,7 +188,8 @@ namespace vicious
 
 			} else {
 				$this->status(500);
-				if (options('environment') == DEVELOPMENT) {
+				if (options('environment') != PRODUCTION) {
+					$t = $e->trace();
 					$backtrace = explode("\n", $e->trace_as_string());
 					array_shift($backtrace);
 					$backtrace = join('</pre></li><li><pre>', $backtrace);
