@@ -14,33 +14,33 @@ namespace vicious
 
 	class Application
 	{
-	
+
 		protected $router;
 		protected $route;
 		protected $before = array();
-	
+
 		protected $error_handler = false;
 		protected $not_found_handler = false;
 		protected $error_shown = false;
 
 		protected $config_handlers = array();
-	
+
 		/**
 		 * Initialize a vicious based app.
 		 * Not strictly necessary if you don't want to use auto dispatch and
 		 * want to manage your own paths.
-		 */		
+		 */
 		public static function init() {
 			$inc = get_include_path();
 			if (!strpos($inc, __DIR__)) set_include_path(__DIR__.PATH_SEPARATOR.$inc);
-			
+
 			# grab an instance to get it constructed
 			$s = self::instance();
 			if (options('auto_dispatch') === true) {
 				register_shutdown_function(array($s, 'auto_dispatch'));
 			}
 		}
-		
+
 		public function auto_dispatch() {
 			try {
 				$this->dispatch(request('uri'));
@@ -49,10 +49,10 @@ namespace vicious
 			}
 		}
 
-		
+
 		protected function __construct() {
 			# set app file location
-			set('app_file', $_SERVER['SCRIPT_FILENAME']);	
+			set('app_file', $_SERVER['SCRIPT_FILENAME']);
 
 			# handle errors our way
 			set_error_handler(array(&$this, 'default_error_handler'));
@@ -74,7 +74,7 @@ namespace vicious
 		}
 
 		/**
-		 * Dispatch is the main point of execution. 
+		 * Dispatch is the main point of execution.
 		 */
 		public function dispatch($uri, $verb=false) {
 			# some PHP polymorphism here.
@@ -82,7 +82,7 @@ namespace vicious
 				if ($verb === false) $verb = $uri->method;
 				$uri = $uri->uri;
 			}
-			
+
 			if ($verb === false) $verb = request('method');
 
 			# first run configs
@@ -97,20 +97,20 @@ namespace vicious
 					call_user_func($handler);
 				}
 			}
-		
+
 			# find the right route
 			$this->route = $this->router->route_for_request($verb, $uri);
-		
+
 			# run filters and catch output
-			ob_start();			
+			ob_start();
 			foreach($this->before as $filter) {
 				call_user_func($filter);
 			}
 			$filter_output = ob_get_clean();
-		
+
 			# exec the method
 			$out = $this->route->execute();
-	
+
 			# show the results
 			if ($out != null) {
 				if (is_string($out)) {
@@ -122,10 +122,10 @@ namespace vicious
 					$out->render();
 				}
 			}
-		
+
 		}
 
-	
+
 		public function get($pattern, $handler)			{ $this->router->get($pattern, $handler); }
 		public function put($pattern, $handler)			{ $this->router->put($pattern, $handler); }
 		public function post($pattern, $handler)		{ $this->router->post($pattern, $handler); }
@@ -159,7 +159,7 @@ namespace vicious
 			$logo = 'data:image/png;base64,' . base64_encode(file_get_contents(__DIR__.'/images/vicious.png'));
 			if (!($e instanceof ViciousException)) $e = ViciousException::fromException($e);
 
-			if ($e instanceof NotFound) {	
+			if ($e instanceof NotFound) {
 				$this->status(404);
 				if (options('environment') != PRODUCTION) {
 					$out = "<!DOCTYPE html>
@@ -196,7 +196,7 @@ namespace vicious
 
 
 					$vars = array('GET' => $_GET, 'POST' => $_POST, 'SESSION' => isset($_SESSION) ? $_SESSION : array(), 'SERVER' => $_SERVER);
-					
+
 					foreach($vars as $type => $sg) {
 						$html = "";
 						if (empty($sg)) {
@@ -215,7 +215,7 @@ namespace vicious
 						$vars[$type] = $html;
 					}
 
-					
+
 					$out = sprintf("<!DOCTYPE html>
 					<html><head><title>500 Internal Server Error</title>
 					<style type='text/css'>
@@ -245,7 +245,7 @@ namespace vicious
 					<h3>Backtrace</h3>
 					<ul><li><pre>%s</pre></li></ul>
 
-					
+
 					<table>%s
 					%s
 					%s
@@ -271,6 +271,15 @@ namespace vicious
 		}
 
 		public function default_error_handler($errno, $errstr, $errfile, $errline) {
+			if (libxml_use_internal_errors()) {
+				$err = libxml_get_last_error();
+				if ($err) {
+					$exp = LibXMLException::fromLibXMLError($err);
+					libxml_clear_errors();
+					$this->default_exception_handler($exp);
+					return;
+				}
+			}
 			$this->default_exception_handler(new InvalidStatement($errstr, $errno, $errfile, $errline));
 		}
 
@@ -280,8 +289,8 @@ namespace vicious
 			$this->handle_error($e);
 			exit;
 		}
-	
-	
+
+
 		public function params($p=false) {
 			if (!$this->route) return false;
 			$params = $this->route->params();
@@ -307,12 +316,12 @@ namespace vicious
 						header("HTTP/1.0 404 Not Found");
 						header("Status: 404 Not Found");
 						return;
-					
+
 					case 500:
 						header('HTTP/1.1 500 Internal Server Error');
 						header("Status: 500 Internal Server Error");
 						return;
-						
+
 					default:
 						header("Status: $s");
 						return;
@@ -323,14 +332,14 @@ namespace vicious
 		public function redirect($loc=false, $code=false) {
 			if ($code !== false) status($code);
 			$loc = $loc ? $loc : '/';
-			header("Location: $loc");	
+			header("Location: $loc");
 			exit();
 		}
 
 	}
 }
 
-namespace 
+namespace
 {
 	# get single static instance of a Application
 	function app() { return vicious\Application::instance(); }
