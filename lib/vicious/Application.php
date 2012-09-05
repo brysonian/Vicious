@@ -158,7 +158,6 @@ namespace vicious
 			$this->error_shown = true;
 			$logo = 'data:image/png;base64,' . base64_encode(file_get_contents(__DIR__.'/images/vicious.png'));
 			if (!($e instanceof ViciousException)) $e = ViciousException::fromException($e);
-
 			if ($e instanceof NotFound) {
 				$this->status(404);
 				if (options('environment') != PRODUCTION) {
