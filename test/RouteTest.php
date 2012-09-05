@@ -1,6 +1,5 @@
 <?php
-require_once 'PHPUnit/Framework.php';
-require_once '../lib/vicious/Route.php';
+require_once '../vicious/Route.php';
 
 class RouteTest extends PHPUnit_Framework_TestCase
 {
@@ -15,22 +14,22 @@ class RouteTest extends PHPUnit_Framework_TestCase
 		function stringHandler() {
 			define('STRING_RAN', true);
 		}
-		
+
 		$r = new vicious\Route('/', '/', 'stringHandler' );
 		$r->execute();
 		$this->assertTrue(STRING_RAN);
 	}
-	
+
 	public function testExecutesCallbackHandler() {
 		$r = new vicious\Route('/', '/', array($this, 'callback_handler') );
 		$r->execute();
 		$this->assertTrue(CALLBACK_RAN);
 	}
-	
+
 	public function callback_handler() {
 			define('CALLBACK_RAN', true);
 	}
-	
+
 	public function testThrowsHandlerUndefined() {
 		$this->setExpectedException('vicious\HandlerUndefined');
 		$r = new vicious\Route('/', '/', false);

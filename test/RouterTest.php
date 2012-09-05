@@ -1,15 +1,14 @@
 <?php
 
-require_once 'PHPUnit/Framework.php';
-require_once '../lib/vicious/Router.php';
-require_once '../lib/vicious/Config.php';
+require_once '../vicious/Router.php';
+require_once '../vicious/Config.php';
 
 class RouterTest extends PHPUnit_Framework_TestCase
 {
-	
+
 	public function setUp() {
 		set('base', false);
-		
+
 	}
 
 	public function testGet() {
@@ -54,14 +53,14 @@ class RouterTest extends PHPUnit_Framework_TestCase
 	public function testUserRegex() {
 		$r = new RouterTestWrapper();
 		$r->get(r('|/|'), function() {});
-		$this->assertEquals('|/|', $r->routes['GET'][0]->regex());		
+		$this->assertEquals('|/|', $r->routes['GET'][0]->regex());
 	}
 
 	public function testUsesAltDelimiter() {
 		$r = new RouterTestWrapper();
 		$r->get('|/|', function() {});
 		$reg = $r->routes['GET'][0]->regex();
-		$this->assertEquals('`', $reg{0});		
+		$this->assertEquals('`', $reg{0});
 	}
 
 	public function testUrlMatchesRoute() {
@@ -93,12 +92,12 @@ class RouterTest extends PHPUnit_Framework_TestCase
 
 		# fail to match /
 		$this->assertFalse($r->params_for_url_with_route('/', $r->routes['GET'][0]));
-		
+
 		# match something
 		$e = array ('name' => 'bob', 'id' => '55');
 		$p = $r->params_for_url_with_route('/person/bob/55', $r->routes['GET'][0]);
 		$this->assertEquals($e, $p);
-		
+
 		# match a splat
 		$r->get('/stuff/*', function() {});
 		$e = array ('splat' => 'four-score-and-seven-years');
@@ -113,7 +112,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
 		$r->get('/post/:title/:id', function() {});
 		$r->get('/stuff/*', function() {});
 		$r->get('/', function() {});
-		
+
 		$this->assertEquals($r->routes['GET'][0], $r->match_request('GET', '/person/bob/55'));
 		$this->assertEquals($r->routes['GET'][1], $r->match_request('GET', '/post/super-stuff/99'));
 		$this->assertEquals($r->routes['GET'][2], $r->match_request('GET', '/stuff/four-score-and-seven-years'));
@@ -127,7 +126,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
 		$r->get('/post/:title/:id', function() {});
 		$r->get('/stuff/*', function() {});
 		$r->get('/', function() {});
-		
+
 		$route = $r->route_for_request('GET', '/person/bob/55');
 		$e = array ('name' => 'bob', 'id' => '55');
 		$this->assertEquals($r->routes['GET'][0], $route);
@@ -154,17 +153,17 @@ class RouterTest extends PHPUnit_Framework_TestCase
 		$_POST = $p;
 		$_GET['get_var'] = 'v';
 		$p = array_merge($p, $_GET);
-		
+
 		$r = new RouterTestWrapper();
 		$o = $r->process_request_vars(array());
 		$this->assertEquals($p, $o);
-	
+
 	}
 
 	public function testThrowsNotFound() {
 		$this->setExpectedException('vicious\NotFound');
 		$router = new vicious\Router();
-		$router->route_for_request('GET', '/');		
+		$router->route_for_request('GET', '/');
 	}
 }
 
@@ -179,15 +178,15 @@ class RouterTestWrapper extends vicious\Router
 	public function process_request_vars($params) {
 		return parent::process_request_vars($params);
 	}
-	
+
 	public function url_matches_route($url, $route) {
 		return parent::url_matches_route($url, $route);
 	}
-	
+
 	public function params_for_url_with_route($url, $route) {
 		return parent::params_for_url_with_route($url, $route);
 	}
-	
+
 	public function match_request($verb, $url) {
 		return parent::match_request($verb, $url);
 	}

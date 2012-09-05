@@ -1,17 +1,16 @@
 <?php
-require_once 'PHPUnit/Framework.php';
-require_once '../lib/vicious/PHTML.php';
-require_once '../lib/vicious/Config.php';
+require_once '../vicious/PHTML.php';
+require_once '../vicious/Config.php';
 
 class PHTMLTest extends PHPUnit_Framework_TestCase
 {
-	
+
 	private $tmp;
 	private $layout			= 'layout';
 	private $layout_alt = 'layout_alt';
 	private $full				= 'full';
 	private $for_layout	= 'for_layout';
-		
+
 	public function setUp() {
 		# create test templates
 		$for_layout = '<h1><?= $title; ?></h1>';
@@ -21,21 +20,21 @@ class PHTMLTest extends PHPUnit_Framework_TestCase
 
 		$this->tmp = '/tmp/vicious_test';
 		if (!file_exists($this->tmp)) mkdir($this->tmp);
-		
+
 		foreach(array('for_layout', 'full', 'layout_alt', 'layout') as $v) {
 			$f = fopen($this->tmp.'/'.$this->$v.'.phtml', 'w');
 			fwrite($f, $$v);
 			fclose($f);
 		}
 
-		set('views', $this->tmp);		
+		set('views', $this->tmp);
 	}
-	
+
 	public function tearDown() {
 		foreach(array('for_layout', 'full', 'layout_alt', 'layout') as $v) {
 			unlink ($this->tmp.'/'.$this->$v.'.phtml');
 		}
-		
+
 		if (file_exists($this->tmp)) rmdir($this->tmp);
 	}
 
@@ -54,7 +53,7 @@ class PHTMLTest extends PHPUnit_Framework_TestCase
 	}
 
 	public function testRenderTemplateWithAutoLayoutUsingPHTMLConvenience() {
-		phtml()->title = "Test";		
+		phtml()->title = "Test";
 		ob_start();
 		phtml('for_layout')->render();
 		$out = ob_get_clean();
@@ -65,7 +64,7 @@ class PHTMLTest extends PHPUnit_Framework_TestCase
 
 	public function testRenderTemplateWithoutLayoutUsingPHTMLConvenience() {
 		phtml()->title = "Test";
-		
+
 		ob_start();
 		phtml('full', false)->render();
 		$out = ob_get_clean();
@@ -73,10 +72,10 @@ class PHTMLTest extends PHPUnit_Framework_TestCase
 		$this->assertContains( '<h1>Test</h1>', $out );
 		$this->assertContains( '<title>Test</title>', $out );
 	}
-	
+
 	public function testRenderTemplateWithLayoutUsingPHTMLConvenience() {
 		phtml()->title = "Test";
-		
+
 		ob_start();
 		phtml('for_layout', 'layout')->render();
 		$out = ob_get_clean();
@@ -94,7 +93,7 @@ class PHTMLTest extends PHPUnit_Framework_TestCase
 		$p->title = "Test";
 		$p->template = 'for_layout';
 		ob_start();
-		
+
 		$p->render();
 		$out = ob_get_clean();
 		$this->assertContains( '<!DOCTYPE html>', $out );
@@ -106,7 +105,7 @@ class PHTMLTest extends PHPUnit_Framework_TestCase
 		$p = new vicious\PHTML();
 		$p->title = "Test";
 		$p->template = 'full';
-		
+
 		ob_start();
 		$p->render();
 		$out = ob_get_clean();
@@ -114,13 +113,13 @@ class PHTMLTest extends PHPUnit_Framework_TestCase
 		$this->assertContains( '<h1>Test</h1>', $out );
 		$this->assertContains( '<title>Test</title>', $out );
 	}
-	
+
 	public function testRenderTemplateWithLayout() {
 		$p = new vicious\PHTML();
 		$p->title = "Test";
 		$p->template = 'for_layout';
 		$p->layout = 'layout';
-		
+
 		ob_start();
 		$p->render();
 		$out = ob_get_clean();
@@ -128,6 +127,6 @@ class PHTMLTest extends PHPUnit_Framework_TestCase
 		$this->assertContains( '<h1>Test</h1>', $out );
 		$this->assertContains( '<title>Test</title>', $out );
 	}
-	
+
 }
 ?>

@@ -1,19 +1,18 @@
 <?php
-require_once 'PHPUnit/Framework.php';
-require_once '../lib/vicious/Request.php';
+require_once '../vicious/Request.php';
 
 class RequestTest extends PHPUnit_Framework_TestCase
 {
-	
+
 	private $agent = 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_2; en-us) AppleWebKit/531.21.8 (KHTML, like Gecko) Version/4.0.4 Safari/531.21.10';
 	private $accept = 'application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5';
-	
+
 	public function setUp() {
   	$_SERVER['HTTP_USER_AGENT'] = $this->agent;
   	$_SERVER['HTTP_ACCEPT'] = $this->accept;
 		$_SERVER['REQUEST_METHOD'] = 'GET';
 	}
-	
+
 	public function testAgent() {
 		$r = new vicious\Request('/uri/for/something', 'GET');
 		$x = $r->agent;
@@ -42,7 +41,7 @@ class RequestTest extends PHPUnit_Framework_TestCase
 	}
 
 	public function testMethod() {
-		$r = new vicious\Request();		
+		$r = new vicious\Request();
 		$this->assertEquals($r->method, 'GET');
 	}
 

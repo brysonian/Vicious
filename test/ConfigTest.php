@@ -1,6 +1,6 @@
 <?php
-require_once 'PHPUnit/Framework.php';
-require_once '../lib/vicious/Config.php';
+
+require_once '../vicious/Config.php';
 
 class ConfigTest extends PHPUnit_Framework_TestCase
 {
@@ -32,7 +32,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 	public function testAssignsViewsOnAccessIfFalse() {
 		$c = clone vicious\Config::instance();
 		$c->app_file = __FILE__;
-		$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $c->views);
+		$this->assertInternalType('string', $c->views);
 	}
 
 	public function testGenericMutators() {

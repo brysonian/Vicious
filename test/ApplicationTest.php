@@ -1,8 +1,7 @@
 <?php
-require_once 'PHPUnit/Framework.php';
-require_once '../lib/vicious/Application.php';
-require_once('../lib/vicious/Router.php');
-require_once('../lib/vicious/PHTML.php');
+require_once '../vicious/Application.php';
+require_once '../vicious/Router.php';
+require_once '../vicious/PHTML.php';
 
 class ApplicationTest extends PHPUnit_Framework_TestCase
 {
@@ -16,7 +15,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase
 		$f = fopen($this->tmp.'/view.phtml', 'w');
 		fwrite($f, $view);
 		fclose($f);
-		set('views', $this->tmp);		
+		set('views', $this->tmp);
 	}
 
 	public function tearDown() {
@@ -29,22 +28,30 @@ class ApplicationTest extends PHPUnit_Framework_TestCase
 // - TESTS
 // ===========================================================
 	public function testHandleError() {
+		// this is odd, but make a temp version of this file,
+		// and insert a call to cliTestHandleError()
+		// execute it and grab the output for testing
+		$script = __DIR__.'/temp.php';
+		$code = 'define("PHPUnit_MAIN_METHOD", "PHPUnit_TextUI_Command::main");
+$phpunitpath =  strpos("/usr/bin/php", "@php_bin") === 0 ? dirname(__FILE__) : "/etc/php/pear/share/pear";
+$phpunitpath .= DIRECTORY_SEPARATOR . "PHPUnit" . DIRECTORY_SEPARATOR . "Autoload.php";
+require_once $phpunitpath;';
+		$code .= file_get_contents(__FILE__);
+		$code .= "\n\nApplicationTest::cliTestHandleError();\n";
+		file_put_contents($script, $code);
+		$result = `/etc/php/pear/bin/phpunit --verbose $script`;
+		unlink($script);
+		$this->assertRegExp("|<h1>I dunno what you&rsquo;re after.</h1>|", $result);
+	}
+
+	public static function cliTestHandleError() {
 		$r = new ApplicationTestWrapper();
 		$r->not_found(function($e) {echo 'Not found: '.get_class($e); });
 		$r->error(function($e) {echo 'Error: '.get_class($e); });
-		
 		$e = new vicious\NotFound();
-		ob_start();
 		$r->handle_error($e);
-		$o = ob_get_clean();
-		$this->assertEquals('Not found: vicious\NotFound', $o);
-		
-		$v = new vicious\ViciousException();
-		ob_start();
-		$r->handle_error($v);
-		$o = ob_get_clean();
-		$this->assertEquals('Error: vicious\ViciousException', $o);			
 	}
+
 
 	public function testGet() {
 		$r = new ApplicationTestWrapper();
@@ -130,7 +137,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase
 	public function testParams() {
 		$r = new ApplicationTestWrapper();
 		$r->get('/person/:name/:id', function() { return '/person'; });
-		ob_start();			
+		ob_start();
 		$r->dispatch('/person/bob/55', 'GET');
 		$o = ob_get_clean();
 
@@ -145,13 +152,13 @@ class ApplicationTest extends PHPUnit_Framework_TestCase
 		$r->get('/person/:name/:id', function() { return '/person'; });
 		$r->get('/', function() { phtml()->title="test"; return phtml('view');});
 
-		ob_start();			
+		ob_start();
 		$r->dispatch('/person/bob/55', 'GET');
 		$o = ob_get_clean();
 
 		$this->assertEquals('/person', $o);
 
-		ob_start();			
+		ob_start();
 		$r->dispatch('/', 'GET');
 		$o = ob_get_clean();
 
@@ -170,7 +177,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals('/person', $o);
 
-		ob_start();			
+		ob_start();
 		$request = new vicious\Request('/', 'GET');
 		$r->dispatch($request);
 		$o = ob_get_clean();
@@ -182,7 +189,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase
 		$r = new ApplicationTestWrapper();
 		$r->get('/person/:name/:id', function() { return '/person/'.options('test'); });
 		$r->before(function() { echo "FILTER"; set('test', 'testing'); });
-		ob_start();			
+		ob_start();
 		$r->dispatch('/person/bob/55', 'GET');
 		$o = ob_get_clean();
 		$this->assertEquals($o, 'FILTER/person/testing');
@@ -194,7 +201,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase
 		$r->configure(DEVELOPMENT, function() { set('dev', 'testing'); });
 		$r->configure(PRODUCTION, function() { set('dev', 'not-testing'); });
 		$r->configure(DEVELOPMENT, function() { set('another_dev', 'testing'); });
-		ob_start();			
+		ob_start();
 		$r->dispatch('/', 'GET');
 		$o = ob_get_clean();
 		$this->assertEquals('/testing/testing', $o);
@@ -213,7 +220,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase
 
 	public function testAddsViciousToIncludePath() {
 		vicious\Application::init();
-		$this->assertContains(realpath('../lib/vicious/'), get_include_path());
+		$this->assertContains(realpath('../vicious/'), get_include_path());
 	}
 
 
@@ -243,11 +250,9 @@ class ApplicationTestWrapper extends vicious\Application
 		$this->router = new RouterTestWrapper();
 
 	}
-	
+
 	# to keep the "already sent" errs from happening, ugh.
 	public function status($s) {
-	
+
 	}
 }
-
-?>
