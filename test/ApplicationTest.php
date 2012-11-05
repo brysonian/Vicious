@@ -1,7 +1,7 @@
 <?php
-require_once '../vicious/Application.php';
-require_once '../vicious/Router.php';
-require_once '../vicious/PHTML.php';
+require_once '../Application.php';
+require_once '../Router.php';
+require_once '../PHTML.php';
 
 class ApplicationTest extends PHPUnit_Framework_TestCase
 {
@@ -220,7 +220,7 @@ require_once $phpunitpath;';
 
 	public function testAddsViciousToIncludePath() {
 		vicious\Application::init();
-		$this->assertContains(realpath('../vicious/'), get_include_path());
+		$this->assertContains(realpath('../'), get_include_path());
 	}
 
 

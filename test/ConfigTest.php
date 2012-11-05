@@ -1,6 +1,6 @@
 <?php
 
-require_once '../vicious/Config.php';
+require_once '../Config.php';
 
 class ConfigTest extends PHPUnit_Framework_TestCase
 {

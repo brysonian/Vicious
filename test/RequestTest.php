@@ -1,5 +1,5 @@
 <?php
-require_once '../vicious/Request.php';
+require_once '../Request.php';
 
 class RequestTest extends PHPUnit_Framework_TestCase
 {

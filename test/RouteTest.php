@@ -1,5 +1,5 @@
 <?php
-require_once '../vicious/Route.php';
+require_once '../Route.php';
 
 class RouteTest extends PHPUnit_Framework_TestCase
 {

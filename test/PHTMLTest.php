@@ -1,6 +1,6 @@
 <?php
-require_once '../vicious/PHTML.php';
-require_once '../vicious/Config.php';
+require_once '../PHTML.php';
+require_once '../Config.php';
 
 class PHTMLTest extends PHPUnit_Framework_TestCase
 {

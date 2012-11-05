@@ -1,7 +1,7 @@
 <?php
 
-require_once '../vicious/Router.php';
-require_once '../vicious/Config.php';
+require_once '../Router.php';
+require_once '../Config.php';
 
 class RouterTest extends PHPUnit_Framework_TestCase
 {

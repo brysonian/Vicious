@@ -1,6 +1,6 @@
 <?php
 
-require_once '../vicious/AbstractView.php';
+require_once '../AbstractView.php';
 
 class AbstractViewTest extends PHPUnit_Framework_TestCase
 {
