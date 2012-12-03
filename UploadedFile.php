@@ -15,14 +15,14 @@ class UploadedFile
 	protected $mime_type;
 	protected $error;
 	protected $size;
-	
+
 	protected $extension;
-	
+
 	protected $imagetypecode;
 	protected $isimage;
 	protected $width;
 	protected $height;
-	
+
 
 	static function create($fileinfo) {
 		$out = array();
@@ -44,7 +44,7 @@ class UploadedFile
 				$fileinfo['name'],
 				$fileinfo['type'],
 				$fileinfo['error'],
-				$fileinfo['size']);			
+				$fileinfo['size']);
 			return ($f instanceof UploadedFile) ? $f : false;
 		}
 		if (count($out) == 0) return false;
@@ -54,10 +54,10 @@ class UploadedFile
 
 
 	function __construct($path, $name, $mime, $err, $size) {
-		
+
 		# make sure it was uploaded
 		if (!is_uploaded_file($path)) throw new NotUploadedFile("File is not a valid uploaded file.");
-		
+
 		# set params
 		$this->set_path($path);
 		$this->set_filename($name);
@@ -73,18 +73,18 @@ class UploadedFile
 			case ($exif_type == IMAGETYPE_GIF && $this->get_extension() == 'gif'):
 				$t = 'gif';
 				break;
-			
+
 			case ($exif_type == IMAGETYPE_JPEG && ($this->get_extension() == 'jpg' || $this->get_extension() == 'jpeg')):
 				$t = 'jpg';
 				break;
-			
+
 			case ($exif_type == IMAGETYPE_PNG && $this->get_extension() == 'png'):
 				$t = 'png';
 				break;
-					
+
 			case ($exif_type == IMAGETYPE_SWF && $this->get_extension() == 'swf'):
 				$t = 'swf';
-				break;				
+				break;
 		}
 
 		if ($t) {
@@ -96,7 +96,7 @@ class UploadedFile
 			$this->set_is_image(false);
 		}
 	}
-	
+
 // ===========================================================
 // - ACCESSORS
 // ===========================================================
@@ -114,14 +114,14 @@ class UploadedFile
 	public function is_image() { return $this->isimage; }
 	public function get_width() {
 		if (!$this->width) $this->init_width_and_height();
-		return $this->width; 
+		return $this->width;
 	}
-	public function get_height() { 
+	public function get_height() {
 		if (!$this->height) $this->init_width_and_height();
-		return $this->height; 
+		return $this->height;
 	}
-	
-	
+
+
 	// setters
 	private function set_path($newval) { $this->path = $newval; }
 	private function set_filename($newval) { $this->name = $newval; }
@@ -146,9 +146,9 @@ class UploadedFile
 	public function is_jpeg() { return ($this->get_image_type_code() == IMAGETYPE_JPEG); }
 	public function is_gif() { return ($this->get_image_type_code() == IMAGETYPE_GIF); }
 	public function is_png() { return ($this->get_image_type_code() == IMAGETYPE_PNG); }
-	
-	
-	
+
+
+
 
 
 // ===========================================================
@@ -175,15 +175,15 @@ class UploadedFile
 
 		# make sure the filename is kosher by killing non alpanum chars
 		$newname =  preg_replace("/[^a-zA-Z0-9_.]/i", '-', stripslashes($newname));
-		
+
 		# check for trailing slash
 		if (substr($path, -1) != '/') $path .= '/';
-		
+
 		# if we aren't forcing, check that it doesn't exist first
 		if (!$force) {
 			if (file_exists($path.$newname)) return false;
 		}
-		
+
 		# copy it to the directory
 		$status = move_uploaded_file($this->get_path(), $path.$newname);
 
@@ -196,9 +196,9 @@ class UploadedFile
 		}
 		return true;
 	}
-	
-	
-	
+
+
+
 
 // ===========================================================
 // - IMAGE METHODS
@@ -211,9 +211,9 @@ class UploadedFile
 	*/
 	function resize($width, $height, $path, $output_type='jpg') {
 		# make sure GD is installed
-		if (!function_exists('gd_info')) 
+		if (!function_exists('gd_info'))
 			throw new GDMissing("GD is required to resize image.", 0);
-			
+
 		if ($this->is_jpeg()) {
 			$src_img = @imagecreatefromjpeg($this->get_path());
 
@@ -222,7 +222,7 @@ class UploadedFile
 
 		} else if ($this->is_png()) {
 			$src_img = @imagecreatefrompng($this->get_path());
-			imagealphablending($src_img, false); 
+			imagealphablending($src_img, false);
 			imagesavealpha($src_img,true);
 		} else {
 			throw new FormatNotResizable("File is not a resizable format.", 0);
@@ -232,15 +232,15 @@ class UploadedFile
 		$bg = imagecolorallocate($dst_img, 255,255,255);
 		imagefill($dst_img, 0, 0, $bg);
 
-		imagecopyresized($dst_img,$src_img,0,0,0,0,$width,$height,imagesx($src_img),imagesy($src_img));
+		imagecopyresampled($dst_img,$src_img,0,0,0,0,$width,$height,imagesx($src_img),imagesy($src_img));
 
 		// cleanup
 		imagedestroy($src_img);
-		
+
 		// update size
 		$this->set_width($width);
 		$this->set_height($height);
-		
+
 		switch ($output_type) {
 			case 'gif':
 				return imagegif($dst_img, $path);
@@ -250,7 +250,7 @@ class UploadedFile
 				return imagejpeg($dst_img, $path, 100);
 		}
 	}
-	
+
 	/**
 	*	resize image preserving aspect to a max size
 	*	@param $max: max size
@@ -266,17 +266,17 @@ class UploadedFile
 		}
 		return $this->resize($w, $h, $path, $output_type);
 	}
-	
+
 	/**
 	*	resize image preserving aspect to specific width
 	*	@param $width: new width
 	*	@returns bool of success
 	*/
 	function fit_width($width, $path, $output_type='jpg') {
-		$h = floor(($this->get_height() * $width) / $this->get_width());		
+		$h = floor(($this->get_height() * $width) / $this->get_width());
 		return $this->resize($width, $h, $path, $output_type);
 	}
-	
+
 	function __toString() {
 		return $this->path;
 	}
