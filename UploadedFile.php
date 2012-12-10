@@ -146,7 +146,25 @@ class UploadedFile
 	public function is_jpeg() { return ($this->get_image_type_code() == IMAGETYPE_JPEG); }
 	public function is_gif() { return ($this->get_image_type_code() == IMAGETYPE_GIF); }
 	public function is_png() { return ($this->get_image_type_code() == IMAGETYPE_PNG); }
+	public function is_animated() {
+		if (!$this->is_gif()) return false;
 
+		// from http://php.net/manual/en/function.imagecreatefromgif.php#88005
+    //an animated gif contains multiple "frames", with each frame having a
+    //header made up of:
+    // * a static 4-byte sequence (\x00\x21\xF9\x04)
+    // * 4 variable bytes
+    // * a static 2-byte sequence (\x00\x2C)
+    // We read through the file til we reach the end of the file, or we've found
+    // at least 2 frame headers
+    if(!($fh = @fopen($this->get_path(), 'rb'))) return false;
+    $count = 0;
+    while(!feof($fh) && $count < 2)
+        $chunk = fread($fh, 1024 * 100); //read 100kb at a time
+        $count += preg_match_all('#\x00\x21\xF9\x04.{4}\x00\x2C#s', $chunk, $matches);
+    fclose($fh);
+    return $count > 1;
+	}
 
 
 
@@ -218,7 +236,22 @@ class UploadedFile
 			$src_img = @imagecreatefromjpeg($this->get_path());
 
 		} else if ($this->is_gif()) {
-			$src_img = @imagecreatefromgif($this->get_path());
+
+			if ($this->is_animated()) {
+				$err = "Animated gif resizing requires system() access to imagemagick.";
+				if (!function_exists('system')) throw new UploadedFileException($err, 0);
+				$out = system("which convert");
+		    if (empty($out)) throw new UploadedFileException($err, 0);
+
+				$coalesce = tempnam('/tmp', 'coalesce.gif');
+				system("convert " . $this->get_path() . " -coalesce $coalesce");
+				system("convert -size " . $this->get_width() . "x" . $this->get_height() . " $coalesce -resize {$width}x{$height} $path");
+				unlink($coalesce);
+				return true;
+
+			} else {
+				$src_img = @imagecreatefromgif($this->get_path());
+			}
 
 		} else if ($this->is_png()) {
 			$src_img = @imagecreatefrompng($this->get_path());
@@ -285,14 +318,14 @@ class UploadedFile
 // ===========================================================
 // - EXCEPTIONS
 // ===========================================================
-class UpoadedFileException extends ViciousException {}
-class InvalidPath extends UpoadedFileException {}
-class WritePermission extends UpoadedFileException {}
-class NotUploadedFile extends UpoadedFileException {}
-class FileMove extends UpoadedFileException {}
-class GDMissing extends UpoadedFileException {}
-class FormatNotResizable extends UpoadedFileException {}
-class InvalidFileType extends UpoadedFileException {}
+class UploadedFileException extends ViciousException {}
+class InvalidPath extends UploadedFileException {}
+class WritePermission extends UploadedFileException {}
+class NotUploadedFile extends UploadedFileException {}
+class FileMove extends UploadedFileException {}
+class GDMissing extends UploadedFileException {}
+class FormatNotResizable extends UploadedFileException {}
+class InvalidFileType extends UploadedFileException {}
 
 }
 ?>
