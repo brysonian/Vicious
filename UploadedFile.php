@@ -240,12 +240,12 @@ class UploadedFile
 			if ($this->is_animated()) {
 				$err = "Animated gif resizing requires system() access to imagemagick.";
 				if (!function_exists('system')) throw new UploadedFileException($err, 0);
-				$out = system("which convert");
+				$out = shell_exec("which convert");
 		    if (empty($out)) throw new UploadedFileException($err, 0);
 
 				$coalesce = tempnam('/tmp', 'coalesce.gif');
-				system("convert " . $this->get_path() . " -coalesce $coalesce");
-				system("convert -size " . $this->get_width() . "x" . $this->get_height() . " $coalesce -resize {$width}x{$height} $path");
+				shell_exec("convert " . $this->get_path() . " -coalesce $coalesce");
+				shell_exec("convert -size " . $this->get_width() . "x" . $this->get_height() . " $coalesce -resize {$width}x{$height} $path");
 				unlink($coalesce);
 				return true;
 
