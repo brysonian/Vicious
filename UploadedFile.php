@@ -25,6 +25,7 @@ class UploadedFile
 
 
 	static function create($fileinfo) {
+		if ($fileinfo['size'] == 0) return false;
 		$out = array();
 		if (is_array($fileinfo['name'])) {
 			foreach($fileinfo['name'] as $k => $v) {
@@ -56,7 +57,7 @@ class UploadedFile
 	function __construct($path, $name, $mime, $err, $size) {
 
 		# make sure it was uploaded
-		if (!is_uploaded_file($path)) throw new NotUploadedFile("File is not a valid uploaded file.");
+		if (!is_uploaded_file($path)) throw new NotUploadedFile("The file $path is not a valid uploaded file.");
 
 		# set params
 		$this->set_path($path);
