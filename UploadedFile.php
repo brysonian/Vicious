@@ -246,8 +246,10 @@ class UploadedFile
 		    if (empty($out)) throw new UploadedFileException($err, 0);
 
 				$coalesce = tempnam('/tmp', 'coalesce.gif');
-				shell_exec("convert " . $this->get_path() . " -coalesce $coalesce");
-				shell_exec("convert -size " . $this->get_width() . "x" . $this->get_height() . " $coalesce -resize {$width}x{$height} $path");
+				copy($this->get_path(), $coalesce);
+				shell_exec("convert " . $coalesce . " -coalesce $coalesce");
+				shell_exec("convert -size " . $this->get_width() . "x" . $this->get_height() . " $coalesce -resize {$width}x{$height} $coalesce");
+				copy($coalesce, $path);
 				unlink($coalesce);
 				return true;
 
