@@ -312,6 +312,16 @@ class UploadedFile
 		return $this->resize($width, $h, $path, $output_type);
 	}
 
+	/**
+	*	resize image preserving aspect to specific height
+	*	@param $height: new height
+	*	@returns bool of success
+	*/
+	function fit_height($height, $path, $output_type='jpg') {
+		$w = floor(($this->get_width() * $height) / $this->get_height());
+		return $this->resize($w, $height, $path, $output_type);
+	}
+
 	function __toString() {
 		return $this->path;
 	}
