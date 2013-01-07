@@ -1,7 +1,7 @@
 {
     "name": "vicious/vicious",
     "require": {
-        "php": ">=5.3.0",
+        "php": ">=5.3.0"
     },
     "type": "microframework",
     "description": "A PHP clone(ish) of Sinatra.",
