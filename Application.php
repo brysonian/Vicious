@@ -86,13 +86,13 @@ namespace vicious
 			if ($verb === false) $verb = request('method');
 
 			# first run configs
-			if (array_key_exists('ALL', $this->config_handlers)) {
+			if (isset($this->config_handlers['ALL']) && is_array($this->config_handlers['ALL'])) {
 				foreach($this->config_handlers['ALL'] as $handler) {
 					call_user_func($handler);
 				}
 			}
 
-			if (array_key_exists(options('environment'), $this->config_handlers)) {
+			if (isset($this->config_handlers[options('environment')]) && is_array($this->config_handlers[options('environment')])) {
 				foreach($this->config_handlers[options('environment')] as $handler) {
 					call_user_func($handler);
 				}
@@ -294,7 +294,7 @@ namespace vicious
 			if (!$this->route) return false;
 			$params = $this->route->params();
 			if ($p === false) return $params;
-			if (is_array($params) && array_key_exists($p, $params)) {
+			if (isset($params[$p])) {
 				return $params[$p];
 			} else {
 				return false;

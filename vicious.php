@@ -4,7 +4,7 @@ declare(encoding='UTF-8');
 
 # generator
 if (php_sapi_name() == 'cli') {
-	if (!array_key_exists(1, $_SERVER['argv'])) {
+	if (!isset($_SERVER['argv'][1])) {
 		$err = "\nVicious generator. \n==================\n";
 		$err .= "ERROR: You must specify an action.\n";
 		$err .= "\n\nExample Usage:\n    php vicious.php htaccess routes.php\n";

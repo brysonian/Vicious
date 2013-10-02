@@ -1,6 +1,6 @@
 <?php
 
-if (!array_key_exists(2, $_SERVER['argv'])) die ("ERROR: You must pass the path to your main app file.");
+if (!isset($_SERVER['argv'][2])) die ("ERROR: You must pass the path to your main app file.");
 
 $appfile = $_SERVER['argv'][2];
 $ht = <<<EOD

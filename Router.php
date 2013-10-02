@@ -19,7 +19,7 @@ class Router
 		$this->routes['POST']		= array();
 		$this->routes['PUT']		= array();
 		$this->routes['GET']		= array();
-		$this->routes['DELETE']	= array(); 
+		$this->routes['DELETE']	= array();
 	}
 
 
@@ -30,17 +30,17 @@ class Router
 
 	protected function route($verb, $pattern, $handler)	{
 		# create the regex from the pattern
-		if (is_array($pattern) && array_key_exists("regex", $pattern)) {
+		if (is_array($pattern) && isset($pattern["regex"])) {
 			$regex = $pattern['regex'];
 			$pattern = false;
-			
+
 		} else {
 			# choose regex delimiter dynamically incase a pipe is in the pattern
 			$delim = '|';
 			foreach(array('|', '`', '~', '^', "#") as $delim) if (strpos($pattern, $delim) === false) break;
-		
+
 			$terminate = (strpos($pattern, ':') || strpos($pattern, '*')) ? '' : '$';
-		
+
 			$regex = $delim.'^'.options('base').preg_replace_callback(
 				'/\/([:|\*])?([a-zA-Z0-9_]*)/',
 				array($this, 'pattern_to_regex'),
@@ -63,7 +63,7 @@ class Router
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	protected function url_matches_route($url, $route) {
 		# make sure they match
@@ -77,10 +77,10 @@ class Router
 
 		# make sure they match
 		$urlparts = array();
-		
+
 		# just in case
 		if (!preg_match($regex, $url, $urlparts)) return false;
-		
+
 		# switch here if the pattern was a regex from the user,
 		# just populate params with indexes
 		if ($pattern == false) {
@@ -91,27 +91,27 @@ class Router
 			array_shift($parts);
 			array_shift($urlparts);
 
-			foreach($parts as $k => $v) {			
+			foreach($parts as $k => $v) {
 				if (empty($v)) continue;
 				if ($v{0} == ':' || $v{0} == '*') {
 					$name = ($v{0} == '*') ? 'splat' : substr($v,1);
 
 					# get the value
-					if (array_key_exists($k, $urlparts) && ($urlparts[$k] != '') && (!is_null($urlparts[$k]))) $out[$name] = $urlparts[$k];
+					#if (array_key_exists($k, $urlparts) && ($urlparts[$k] != '') && (!is_null($urlparts[$k]))) $out[$name] = $urlparts[$k];
+					if (isset($urlparts[$k]) && !empty($urlparts[$k])) $out[$name] = $urlparts[$k];
 				}
-			}	
+			}
 		}
 
 		return $out;
 	}
-	
+
 
 	/**
 	* Find the best matching map for the url
 	*/
 	protected function match_request($verb, $url) {
-		# watch out for bad verbs
-		if (!array_key_exists($verb, $this->routes)) return false;
+		if (!isset($this->routes[$verb])) return false;
 
 		# remove the leading slash
 		$url = substr($url, 1);
@@ -123,7 +123,7 @@ class Router
 		}
 		return false;
 	}
-	
+
 	/**
 	* find the best route and return it
 	*/
@@ -139,19 +139,19 @@ class Router
 
 		# if no match was found, throw
 		if ($active_route === false) throw new NotFound("No mapping was found for &quot;$url&quot;.");
-		
+
 		# get the params for this url using the choosen route
 		$params = $this->params_for_url_with_route($url, $active_route);
-		
+
 		# add request to params and make sure magic quotes are dealt with
 		$params = $this->process_request_vars($params);
-	
+
 		$active_route->set_params($params);
-		
+
 		# return the route
 		return $active_route;
 	}
-	
+
 
 	protected function process_request_vars($params) {
 		# throw an exception if the max post size is reached
@@ -164,8 +164,8 @@ class Router
 			}
 		}
 
-		
-		
+
+
 		# add request to params and make sure magic quotes are dealt with
 		unset($_POST['MAX_FILE_SIZE']);
 		unset($_GET['MAX_FILE_SIZE']);
@@ -173,7 +173,7 @@ class Router
 
 		foreach(array($_GET, $_POST) as $R) {
 			foreach($R as $k => $v) {
-				if (!array_key_exists($k, $params)) {
+				if (!isset($params[$k])) {
 					if (is_array($v)) {
 						$params[$k] = array();
 						foreach($v as $k2 => $v2) {
@@ -185,12 +185,12 @@ class Router
 				}
 			}
 		}
-		
+
 		# add files to params
 		foreach($_FILES as $k => $v) {
-			if (!array_key_exists($k, $params)) {
+			if (!isset($params[$k])) {
 				try {
-					$uploaded_file = UploadedFile::create($v);					
+					$uploaded_file = UploadedFile::create($v);
 				} catch (UpoadedFileException $e) {
 					$uploaded_file = false;
 				}
@@ -198,10 +198,10 @@ class Router
 			}
 		}
 
-		
-		
+
+
 		return $params;
-	}	
+	}
 }
 
 
@@ -214,9 +214,9 @@ class MaxPostSizeExceeded extends ViciousException {}
 
 }
 
-namespace 
+namespace
 {
-	
+
 	function r($pattern) {
 		return array('regex' => $pattern);
 	}

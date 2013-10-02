@@ -7,6 +7,7 @@ namespace vicious
 interface Renderable
 {
 	public function render();
+	public function send_content_type_header();
 }
 
 }
