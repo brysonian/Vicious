@@ -2,8 +2,6 @@
 
 namespace Vicious;
 
-require_once(__DIR__.'/ViciousException.php');
-
 class Request
 {
 

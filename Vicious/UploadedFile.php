@@ -1,10 +1,6 @@
 <?php
-declare(encoding='UTF-8');
 
-namespace Vicious
-{
-
-require_once(__DIR__.'/ViciousException.php');
+namespace Vicious;
 
 class UploadedFile
 {
@@ -340,6 +336,3 @@ class FileMove extends UploadedFileException {}
 class GDMissing extends UploadedFileException {}
 class FormatNotResizable extends UploadedFileException {}
 class InvalidFileType extends UploadedFileException {}
-
-}
-?>
