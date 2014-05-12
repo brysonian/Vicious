@@ -1,7 +1,7 @@
 <?php
 declare(encoding='UTF-8');
 
-namespace vicious
+namespace Vicious
 {
 
 require_once(__DIR__.'/ViciousException.php');

@@ -1,46 +1,47 @@
 <?php
-declare(encoding='UTF-8');
 
-namespace vicious
-{
+namespace Vicious;
 
-require_once(__DIR__.'/ViciousException.php');
 
 /**
  * Fairly dumb container for:
  * 	route pattern
- * 	handler
+ * 	callback
  * 	route regex (made from the pattern)
  * 	parsed params
  */
 class Route
 {
 	private $pattern			= false;
-	private $handler	 		= false;
+	private $callback	 		= false;
 	private $regex				= false;
 	private $params				= array();
-	
- function __construct($_pattern, $_regex, $_handler) {
+
+ function __construct($_pattern, $_regex, $_callback) {
 		$this->pattern			= $_pattern;
 		$this->regex				= $_regex;
-		$this->handler			= $_handler;
+		$this->callback			= $_callback;
 	}
-		
+
 	public function execute() {
-		if (is_null($this->handler) || $this->handler === false) throw new HandlerUndefined();
-		return call_user_func($this->handler);
+		if (is_null($this->callback) || $this->callback === false) throw new CallbackUndefined();
+
+		if (is_string($this->callback) && strpos($this->callback, '\\') !== false) {
+			if (!function_exists($this->callback)) {
+				$spec = explode('\\', $this->callback);
+				Vicious::autoload($spec[0]);
+			}
+		}
+		return call_user_func_array($this->callback, $this->params);
 	}
-	
-	public function handler() { return $this->handler; }
+
+	public function callback() { return $this->callback; }
 	public function regex() { return $this->regex; }
-	public function pattern() { return $this->pattern; }	
+	public function pattern() { return $this->pattern; }
 
-	public function params() { return $this->params; }	
-	public function set_params($p) { $this->params = $p; }	
+	public function params() { return $this->params; }
+	public function set_params($p) { $this->params = $p; }
 }
 
-class HandlerUndefined extends ViciousException {}
+class CallbackUndefined extends ViciousException {}
 
-}
-
-?>

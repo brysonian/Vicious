@@ -1,13 +1,6 @@
 <?php
-declare(encoding='UTF-8');
 
-namespace vicious
-{
-
-require_once(__DIR__.'/ViciousException.php');
-require_once(__DIR__.'/Route.php');
-require_once(__DIR__.'/UploadedFile.php');
-
+namespace Vicious;
 
 class Router
 {
@@ -41,7 +34,7 @@ class Router
 
 			$terminate = (strpos($pattern, ':') || strpos($pattern, '*')) ? '' : '$';
 
-			$regex = $delim.'^'.options('base').preg_replace_callback(
+			$regex = $delim.'^'.preg_replace_callback(
 				'/\/([:|\*])?([a-zA-Z0-9_]*)/',
 				array($this, 'pattern_to_regex'),
 				$pattern
@@ -211,16 +204,3 @@ class Router
 class NotFound extends ViciousException {}
 class UnknownController extends ViciousException {}
 class MaxPostSizeExceeded extends ViciousException {}
-
-}
-
-namespace
-{
-
-	function r($pattern) {
-		return array('regex' => $pattern);
-	}
-
-}
-
-?>
