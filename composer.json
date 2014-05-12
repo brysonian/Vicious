@@ -1,5 +1,5 @@
 {
-    "name": "Vicious/Vicious",
+    "name": "vicious/vicious",
     "type": "microframework",
     "description": "A PHP clone(ish) of Sinatra.",
     "keywords": ["microframework","rest","router"],

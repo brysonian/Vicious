@@ -139,7 +139,7 @@ class Vicious
 			if (is_string($out)) {
 				echo $filter_output;
 				echo $out;
-			} else if ($out instanceof Renderable) {
+			} else if ($out instanceof View\Renderable) {
 				$out->template_dir = $this->config->templates;
 				$out->send_content_type_header();
 				echo $filter_output;
@@ -321,7 +321,7 @@ return 'Hello World';
 		if ($out != null) {
 			if (is_string($out)) {
 				die($out);
-			} else if ($out instanceof Renderable) {
+			} else if ($out instanceof View\Renderable) {
 				$out->send_content_type_header();
 				$out->render();
 			}
