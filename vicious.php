@@ -215,64 +215,99 @@ return 'Hello World';
 				$t = $e->trace();
 				$backtrace = explode("\n", $e->trace_as_string());
 				array_shift($backtrace);
+				foreach($backtrace as $k => $v) {
+					$i = strpos($v, ':');
+					$backtrace[$k] = substr_replace($v, '<br>&nbsp;&nbsp;', $i, 1);
+				}
 				$backtrace = join('</pre></li><li><pre>', $backtrace);
 
 
 				$vars = array('GET' => $_GET, 'POST' => $_POST, 'SESSION' => isset($_SESSION) ? $_SESSION : array(), 'SERVER' => $_SERVER);
 
+				# make server path prettier
+				$vars['SERVER'] = str_replace(':', '<br>', $vars['SERVER']);
+
 				foreach($vars as $type => $sg) {
-					$html = "";
+					//$html = "";
+					$html = "<h3 onclick='toggle(\"type-$type\", \"table\")'>$type</h3>
+										<table class='more' id='type-$type'>";
 					if (empty($sg)) {
-						$html .= "<tr class='empty'><th class='type'>$type</th><th colspan='2'>No $type data.</th></tr><tr><td class='blank'></td><td class='empty' colspan='2'>&nbsp;</td></tr>";
+						$html .= "<tr><td colspan='2'>No $type data.</td></tr></table>";
 					} else {
-						$html .= "<tr><th class='type'>$type</th><th>Variable</th><th>Value</th></tr>";
 						foreach($sg as $k => $v) {
 							if (is_array($v)) {
 								ob_start();
 								var_export($v);
 								$v = nl2br(ob_get_clean());
 							}
-							$html .= "<tr><td class='blank'></td><td class='key'>$k</td><td>".wordwrap($v, 150, "<br />\n", true)."</td></tr>";
+							$html .= "<tr><td class='key'>$k</td><td>".wordwrap($v, 150, "<br />\n", true)."</td></tr>";
 						}
+						$html .= '</table>';
 					}
 					$vars[$type] = $html;
 				}
-
 
 				$out = sprintf("<!DOCTYPE html>
 				<html><head><title>500 Internal Server Error</title>
 				<style type='text/css'>
         	body { font-family:helvetica,arial;font-size:18px; margin:50px; letter-spacing: .1em;}
 					#c { width: 960px; margin:0  auto; position: relative; }
-					#h { display: table-cell; vertical-align: bottom; height: 109px; background-color:#FC63CD; color: #FFF; padding:0px 0px 10px 510px; background-image:url($logo); background-repeat:no-repeat;width:460px;}
+					header { padding-top: 75px; background: black url($logo) no-repeat 50%% 0; background-size: 300px;}
+					header .info { padding: 10px; background-color: white; }
+					header h1 {
+						padding: 10px;
+					}
+					header li { margin-top: 5px; padding: 5px 0; border-top: 1px solid black; border-bottom: none;}
 					h1, h2 { margin:0; }
 					h2 { font-size: 16px; color: white; }
-					h2 span { font-weight: normal; }
-					h3 { background-color:#888; color:#FFF; margin: 0px; padding: 3px 10px;}
+					h2, h3 { font-weight: normal; }
+					h3 { color:#000; border: 1px solid black; margin: 20px 0 0 0; padding: 3px 10px;}
 					pre { background-color:#FF0; color:#000; padding: 10px; margin: 0px; font-size:12px; line-height: 1.5em; white-space: pre-wrap;}
 					ul {margin:0px; padding: 0px; list-style: none; }
 					li { border-bottom: 1px solid white; }
 					table { width: 960px; border: 0px; border-spacing: 0px;  }
-					table th.type { font-size: 21px; font-weight: bold; width: 110px; border-right: 1px solid white;}
+					table th.type { font-size: 21px; width: 110px; border-right: 1px solid white;}
 					th { text-align: left; background-color:#888; color:#FFF; padding: 0px 10px; height: 30px; font-weight: normal; font-size: 14px;}
 					td { border-bottom: 1px solid white; background-color:#FF0; color:#000; padding: 10px; margin: 0px; font-size:12px; line-height: 1.5em; }
 					td.key { width: 170px; border-right: 1px solid white; }
 					td.blank { background-color: white; border: none; }
 					tr.empty td { border: none; }
+					.more { display: none; }
+					.backtrace, table, header .info {
+						border: 1px solid black;
+						border-top: none;
+					}
+					header pre {
+						margin-top:7px;
+					}
 				</style>
+				<script type='text/javascript'>
+				function toggle(id, type) {
+					var d = document.getElementById(id).style.display;
+					if (d != type) document.getElementById(id).style.display = type;
+					else document.getElementById(id).style.display = 'none';
+				}
+				</script>
 				</head>
 				<body>
 				<div id='c'>
-				<div id='h'><h1>%s</h1><h2>file: <span>%s</span> line: <span>%s</span> location: <span>%s</span></h2></div>
-				<div><pre>%s</pre></div>
-				<h3>Backtrace</h3>
-				<ul><li><pre>%s</pre></li></ul>
+				<header>
+					<div class='info'>
+						<h1>%s</h1>
+						<ul>
+							<li>file: %s(%s)</li>
+							<li>uri: %s</li>
+							<li><pre>%s</pre></li>
+						</ul>
+					</div>
+				</header>
 
-
-				<table>%s
+				<h3>BACKTRACE</h3>
+				<ul class='backtrace'><li><pre>%s</pre></li></ul>
 				%s
 				%s
-				%s</table>
+				%s
+				%s
 				<div style='clear: both'></div>
 				</div></body></html>", str_replace(array("vicious\\", 'Vicious'), '', get_class($e)), pathinfo($e->file(), PATHINFO_BASENAME), $e->line(), $this->request->uri, $e->message(), $backtrace, $vars['GET'], $vars['POST'], $vars['SESSION'], $vars['SERVER']);
 			} else if ($this->error_handler) {
