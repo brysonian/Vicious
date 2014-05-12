@@ -264,7 +264,7 @@ return 'Hello World';
 					h3 { color:#000; border: 1px solid black; margin: 20px 0 0 0; padding: 3px 10px;}
 					pre { background-color:#FF0; color:#000; padding: 10px; margin: 0px; font-size:12px; line-height: 1.5em; white-space: pre-wrap;}
 					ul {margin:0px; padding: 0px; list-style: none; }
-					li { border-bottom: 1px solid white; }
+					li { border-bottom: 1px solid black; }
 					table { width: 960px; border: 0px; border-spacing: 0px;  }
 					table th.type { font-size: 21px; width: 110px; border-right: 1px solid white;}
 					th { text-align: left; background-color:#888; color:#FFF; padding: 0px 10px; height: 30px; font-weight: normal; font-size: 14px;}
