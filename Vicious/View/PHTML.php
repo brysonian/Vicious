@@ -20,7 +20,12 @@ class PHTML extends AbstractView
 		ob_start();
 
 		# include the template
-		require $this->template_dir . DIRECTORY_SEPARATOR . $this->template.'.'.$this->extension;
+		$f = $this->template_dir . DIRECTORY_SEPARATOR . $this->template.'.'.$this->extension;
+		if (!file_exists($f)) {
+			throw new TemplateFileNotFound();
+		} else {
+			require $f;
+		}
 
 		# get the buffer contents
 		$parsed = ob_get_contents();

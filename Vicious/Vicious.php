@@ -309,7 +309,19 @@ return 'Hello World';
 				%s
 				%s
 				<div style='clear: both'></div>
-				</div></body></html>", str_replace(array("vicious\\", 'Vicious', "\\"), '', get_class($e)), pathinfo($e->file(), PATHINFO_BASENAME), $e->line(), $this->request->uri, $e->message(), $backtrace, $vars['GET'], $vars['POST'], $vars['SESSION'], $vars['SERVER']);
+				</div></body></html>",
+					substr(get_class($e), strrpos(get_class($e), "\\") + 1),
+					pathinfo($e->file(), PATHINFO_BASENAME),
+					$e->line(),
+					$this->request->uri,
+					$e->message(),
+					$backtrace,
+					$vars['GET'],
+					$vars['POST'],
+					$vars['SESSION'],
+					$vars['SERVER']
+				);
+
 			} else if ($this->error_handler) {
 				$out = call_user_func($this->error_handler, $e);
 			} else {

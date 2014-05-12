@@ -1,7 +1,6 @@
 <?php
 
-namespace Vicious\View
-{
+namespace Vicious\View;
 
 class AbstractView implements Renderable
 {
@@ -91,5 +90,4 @@ class AbstractView implements Renderable
 // - EXCEPTIONS
 // ===========================================================
 class TemplateUndefined extends \Vicious\ViciousException {}
-
-}
+class TemplateFileNotFound extends \Vicious\ViciousException {}
