@@ -17,8 +17,6 @@ class Vicious
 
 	protected $config_handlers = array();
 
-	public static $route_path = array();
-
 	/*
    * PSR-0 autoloader
    */
@@ -31,7 +29,6 @@ class Vicious
 				$base_dir = substr($base_dir, 0, -strlen($this_class));
 			}
 		}
-
 		$class_name = ltrim($class_name, '\\');
 		$file_name  = $base_dir;
 		$namespace = '';
@@ -41,18 +38,7 @@ class Vicious
 			$file_name  .= str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
 		}
 		$file_name .= $class_name . '.php';
-
-		if (file_exists($file_name)) {
-			require $file_name;
-
-		} else if (!empty(self::$route_path)) {
-			$file_name = self::$route_path;
-			if (!empty($namespace)) $file_name .= DIRECTORY_SEPARATOR . $namespace;
-			$file_name .= DIRECTORY_SEPARATOR . $class_name . '.php';
-			if (file_exists($file_name)) {
-				require $file_name;
-			}
-		}
+		if (file_exists($file_name)) require $file_name;
 	}
 
 	public static function RegisterAutoloader() {
@@ -135,7 +121,7 @@ class Vicious
 		$filter_output = ob_get_clean();
 
 		# exec the method
-		$out = $this->route->execute();
+		$out = $this->route->execute($this->config->routes);
 
 		# show the results
 		if ($out != null) {

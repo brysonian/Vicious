@@ -21,11 +21,6 @@ class Config
 // - MAGICAL ACCESSORS FOR SETTING PROPERTIES
 // ===========================================================
 	public function __set($k, $v) {
-		// some settings are special
-		if ($k == 'routes') {
-			Vicious::$route_path = $v;
-		}
-
 		$this->props[$k] = $v;
 	}
 

@@ -4,7 +4,7 @@ namespace Vicious;
 
 
 /**
- * Fairly dumb container for:
+ * Container for:
  * 	route pattern
  * 	callback
  * 	route regex (made from the pattern)
@@ -23,13 +23,15 @@ class Route
 		$this->callback			= $_callback;
 	}
 
-	public function execute() {
+	public function execute($route_base='') {
 		if (is_null($this->callback) || $this->callback === false) throw new UndefinedCallback();
-
 		if (is_string($this->callback) && strpos($this->callback, '\\') !== false) {
 			if (!function_exists($this->callback)) {
-				$spec = substr($this->callback, 0, strrpos($this->callback, "\\"));
-				Vicious::autoload($spec);
+				$file_name = $route_base
+										 . DIRECTORY_SEPARATOR
+										 . substr($this->callback, 0, strrpos($this->callback, "\\"))
+										 . '.php';
+				if (file_exists($file_name)) require $file_name;
 			}
 		}
 		return call_user_func_array($this->callback, $this->params);
