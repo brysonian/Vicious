@@ -40,12 +40,15 @@ class Vicious
 			$class_name = substr($class_name, $last_pos + 1);
 			$file_name  .= str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
 		}
-		$file_name .= str_replace('_', DIRECTORY_SEPARATOR, $class_name) . '.php';
+		$file_name .= $class_name . '.php';
 
 		if (file_exists($file_name)) {
 			require $file_name;
+
 		} else if (!empty(self::$route_path)) {
-			$file_name = self::$route_path . DIRECTORY_SEPARATOR . $class_name . '.php';
+			$file_name = self::$route_path;
+			if (!empty($namespace)) $file_name .= DIRECTORY_SEPARATOR . $namespace;
+			$file_name .= DIRECTORY_SEPARATOR . $class_name . '.php';
 			if (file_exists($file_name)) {
 				require $file_name;
 			}

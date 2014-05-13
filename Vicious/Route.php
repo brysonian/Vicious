@@ -24,12 +24,12 @@ class Route
 	}
 
 	public function execute() {
-		if (is_null($this->callback) || $this->callback === false) throw new CallbackUndefined();
+		if (is_null($this->callback) || $this->callback === false) throw new UndefinedCallback();
 
 		if (is_string($this->callback) && strpos($this->callback, '\\') !== false) {
 			if (!function_exists($this->callback)) {
-				$spec = explode('\\', $this->callback);
-				Vicious::autoload($spec[0]);
+				$spec = substr($this->callback, 0, strrpos($this->callback, "\\"));
+				Vicious::autoload($spec);
 			}
 		}
 		return call_user_func_array($this->callback, $this->params);
@@ -43,5 +43,5 @@ class Route
 	public function set_params($p) { $this->params = $p; }
 }
 
-class CallbackUndefined extends ViciousException {}
+class UndefinedCallback extends ViciousException {}
 
