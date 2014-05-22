@@ -27,10 +27,10 @@ class Route
 		if (is_null($this->callback) || $this->callback === false) throw new UndefinedCallback();
 		if (is_string($this->callback) && strpos($this->callback, '\\') !== false) {
 			if (!function_exists($this->callback)) {
-				$file_name = $route_base
+				$file_name = str_replace('\\', DIRECTORY_SEPARATOR, $route_base
 										 . DIRECTORY_SEPARATOR
 										 . substr($this->callback, 0, strrpos($this->callback, "\\"))
-										 . '.php';
+										 . '.php');
 				if (file_exists($file_name)) require $file_name;
 			}
 		}
