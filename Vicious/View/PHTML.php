@@ -36,7 +36,7 @@ class PHTML extends AbstractView
 		# if there is a layout
 		if ($this->layout) {
 			# push the content into the layout
-			$content_for_layout = $parsed;
+			$yield = $parsed;
 
 			# include the template
 			include $this->template_dir . DIRECTORY_SEPARATOR . $this->layout.'.'.$this->extension;
