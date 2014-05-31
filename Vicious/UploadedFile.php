@@ -100,7 +100,7 @@ class UploadedFile
 // ===========================================================
 	// getters
 	public function get_path() { return $this->path; }
-	public function get_web_path() { return str_replace(DOC_ROOT, '', $this->path); }
+	public function get_web_path($root) { return str_replace($root, '', $this->path); }
 	public function get_type() { return $this->type; }
 	public function get_filename() { return $this->name; }
 	public function get_extension() { return $this->extension; }
