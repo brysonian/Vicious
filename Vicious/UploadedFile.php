@@ -35,6 +35,7 @@ class UploadedFile
 					if ($f instanceof UploadedFile) $out[$k] = $f;
 				}
 			}
+			if (count($out) == 1) $out = current($out);
 		} else {
 			$f = new UploadedFile(
 				$fileinfo['tmp_name'],
