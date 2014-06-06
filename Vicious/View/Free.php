@@ -6,9 +6,9 @@
  *
  * All classes that want to act as views for vicious should follow this convention.
  */
-function pjson() {
+function pjson($values=array()) {
 	static $instance;
-	if (!$instance) $instance = new Vicious\View\PJSON();
+	if (!$instance) $instance = new Vicious\View\PJSON($values);
 	return $instance;
 }
 
