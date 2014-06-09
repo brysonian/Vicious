@@ -99,13 +99,14 @@ class Vicious
 		if ($verb === false) $verb = $this->request->method;
 
 		# first run configs
-		if (isset($this->config_handlers['ALL']) && is_array($this->config_handlers['ALL'])) {
-			foreach($this->config_handlers['ALL'] as $handler) {
+		if (isset($this->config_handlers[$this->config->environment]) && is_array($this->config_handlers[$this->config->environment])) {
+			foreach($this->config_handlers[$this->config->environment] as $handler) {
 				call_user_func($handler, $this->config);
 			}
 		}
-		if (isset($this->config_handlers[$this->config->environment]) && is_array($this->config_handlers[$this->config->environment])) {
-			foreach($this->config_handlers[$this->config->environment] as $handler) {
+
+		if (isset($this->config_handlers['ALL']) && is_array($this->config_handlers['ALL'])) {
+			foreach($this->config_handlers['ALL'] as $handler) {
 				call_user_func($handler, $this->config);
 			}
 		}
