@@ -26,10 +26,10 @@ function redirect($loc=false, $code=false) { vicious()->redirect($loc, $code); }
 function request($k=false) { return ($k === false) ? vicious()->request() : vicious()->request()->$k; }
 
 # ROUTING
-function get($pattern, $handler)		{ vicious()->get($pattern, $handler); }
-function put($pattern, $handler)		{ vicious()->put($pattern, $handler); }
-function post($pattern, $handler)		{ vicious()->post($pattern, $handler); }
-function delete($pattern, $handler)	{ vicious()->delete($pattern, $handler); }
+function get($pattern, $handler)		{ return vicious()->get($pattern, $handler); }
+function put($pattern, $handler)		{ return vicious()->put($pattern, $handler); }
+function post($pattern, $handler)		{ return vicious()->post($pattern, $handler); }
+function delete($pattern, $handler)	{ return vicious()->delete($pattern, $handler); }
 function r($pattern) {	return array('regex' => $pattern); }
 
 # VIEW

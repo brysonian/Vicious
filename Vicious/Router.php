@@ -16,10 +16,10 @@ class Router
 	}
 
 
-	public function get($pattern, $handler)			{ $this->route('GET',    $pattern, $handler); }
-	public function put($pattern, $handler)			{ $this->route('PUT',    $pattern, $handler); }
-	public function post($pattern, $handler)		{ $this->route('POST',   $pattern, $handler); }
-	public function delete($pattern, $handler)	{ $this->route('DELETE', $pattern, $handler); }
+	public function get($pattern, $handler)			{ return $this->route('GET',    $pattern, $handler); }
+	public function put($pattern, $handler)			{ return $this->route('PUT',    $pattern, $handler); }
+	public function post($pattern, $handler)		{ return $this->route('POST',   $pattern, $handler); }
+	public function delete($pattern, $handler)	{ return $this->route('DELETE', $pattern, $handler); }
 
 	protected function route($verb, $pattern, $handler)	{
 		# create the regex from the pattern
@@ -40,7 +40,9 @@ class Router
 				$pattern
 			).'/?'.$terminate.$delim;
 		}
-		$this->routes[$verb][] = new Route($pattern, $regex, $handler);
+		$r = new Route($pattern, $regex, $handler);
+		$this->routes[$verb][] = $r;
+		return $r;
 	}
 
 	/**

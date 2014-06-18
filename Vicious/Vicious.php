@@ -140,10 +140,10 @@ class Vicious
 	}
 
 
-	public function get($pattern, $handler)			{ $this->router->get($pattern, $handler); }
-	public function put($pattern, $handler)			{ $this->router->put($pattern, $handler); }
-	public function post($pattern, $handler)		{ $this->router->post($pattern, $handler); }
-	public function delete($pattern, $handler)	{ $this->router->delete($pattern, $handler); }
+	public function get($pattern, $handler)			{ return $this->router->get($pattern, $handler); }
+	public function put($pattern, $handler)			{ return $this->router->put($pattern, $handler); }
+	public function post($pattern, $handler)		{ return $this->router->post($pattern, $handler); }
+	public function delete($pattern, $handler)	{ return $this->router->delete($pattern, $handler); }
 
 	/**
 	 * Add a filter before
