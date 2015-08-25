@@ -99,17 +99,7 @@ class Vicious
 		if ($verb === false) $verb = $this->request->method;
 
 		# first run configs
-		if (isset($this->config_handlers[$this->config->environment]) && is_array($this->config_handlers[$this->config->environment])) {
-			foreach($this->config_handlers[$this->config->environment] as $handler) {
-				call_user_func($handler, $this->config);
-			}
-		}
-
-		if (isset($this->config_handlers['ALL']) && is_array($this->config_handlers['ALL'])) {
-			foreach($this->config_handlers['ALL'] as $handler) {
-				call_user_func($handler, $this->config);
-			}
-		}
+		$this->config_run();
 
 		# find the right route
 		$this->route = $this->router->route_for_request($verb, $uri);
@@ -159,6 +149,23 @@ class Vicious
 			$environment = 'ALL';
 		}
 		$this->config_handlers[$environment][] = $handler;
+	}
+
+	/**
+	 * Run config setup
+	 */
+	public function config_run() {
+		if (isset($this->config_handlers[$this->config->environment]) && is_array($this->config_handlers[$this->config->environment])) {
+			foreach($this->config_handlers[$this->config->environment] as $handler) {
+				call_user_func($handler, $this->config);
+			}
+		}
+
+		if (isset($this->config_handlers['ALL']) && is_array($this->config_handlers['ALL'])) {
+			foreach($this->config_handlers['ALL'] as $handler) {
+				call_user_func($handler, $this->config);
+			}
+		}
 	}
 
 	/**
