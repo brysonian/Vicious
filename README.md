@@ -1,3 +1,5 @@
+[![Latest Stable Version](https://img.shields.io/packagist/v/vicious/vicious.svg)](https://packagist.org/packages/vicious/vicious#2.0.1)
+
 # Vicious
 Vicious is a [PHP](http://php.net) clone(ish) of [Sinatra](http://sinatrarb.com).
 
