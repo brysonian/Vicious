@@ -4,7 +4,7 @@
     "description": "A PHP clone(ish) of Sinatra.",
     "keywords": ["microframework","rest","router"],
     "homepage": "http://github.com/brysonian/vicious",
-    "license": "BSD",
+    "license": "0BSD",
     "require": {
         "php": ">=5.3.0"
     },
