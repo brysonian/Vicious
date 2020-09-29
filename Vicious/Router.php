@@ -88,8 +88,8 @@ class Router
 
 			foreach($parts as $k => $v) {
 				if (empty($v)) continue;
-				if ($v{0} == ':' || $v{0} == '*') {
-					$name = ($v{0} == '*') ? 'splat' : substr($v,1);
+				if ($v[0] == ':' || $v[0] == '*') {
+					$name = ($v[0] == '*') ? 'splat' : substr($v,1);
 
 					# get the value
 					#if (array_key_exists($k, $urlparts) && ($urlparts[$k] != '') && (!is_null($urlparts[$k]))) $out[$name] = $urlparts[$k];
@@ -110,7 +110,7 @@ class Router
 
 		# remove the leading slash
 		$url = substr($url, 1);
-		if ($url{0} != '/') $url = "/$url";
+		if (strlen($url) > 0 && $url[0] != '/') $url = "/$url";
 		foreach($this->routes[$verb] as $route) {
 			if ($this->url_matches_route($url, $route)) {
 				return $route;
@@ -164,7 +164,7 @@ class Router
 		# add request to params and make sure magic quotes are dealt with
 		unset($_POST['MAX_FILE_SIZE']);
 		unset($_GET['MAX_FILE_SIZE']);
-		$gpc = (get_magic_quotes_gpc() == 1);
+		$gpc = false; // (get_magic_quotes_gpc() == 1);
 
 		foreach(array($_GET, $_POST) as $R) {
 			foreach($R as $k => $v) {
