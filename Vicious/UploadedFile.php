@@ -36,6 +36,7 @@ class UploadedFile
 				}
 			}
 			if (count($out) == 1) $out = current($out);
+			return $out;
 		} else {
 			$f = new UploadedFile(
 				$fileinfo['tmp_name'],
@@ -45,10 +46,11 @@ class UploadedFile
 				$fileinfo['size']);
 			return ($f instanceof UploadedFile) ? $f : false;
 		}
-		if (count($out) == 0) return false;
+		if (is_array($out) && count($out) == 0) {
+			return false;
+		}
 		return $out;
 	}
-
 
 
 	function __construct($path, $name, $mime, $err, $size) {
