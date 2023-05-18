@@ -34,7 +34,7 @@ class Route
 				if (file_exists($file_name)) require $file_name;
 			}
 		}
-		return call_user_func_array($this->callback, $this->params);
+		return call_user_func_array($this->callback, array_values($this->params));
 	}
 
 	public function callback() { return $this->callback; }
